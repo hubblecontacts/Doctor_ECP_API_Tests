@@ -658,56 +658,6 @@
 					"response": []
 				},
 				{
-					"name": "Customer Existing email sign up",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"verify unsuccesful sign up attempt for existing customer email\", function(){",
-									"",
-									"    pm.response.to.have.status(500);",
-									"    const res = pm.response.json();",
-									"    pm.expect(res.exception).to.contain(\"ERROR:  duplicate key value violates unique constraint \");",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "customer[email]",
-									"value": "{{signedUpCustomer}}",
-									"type": "text"
-								},
-								{
-									"key": "customer[password]",
-									"value": "{{customerPass}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseURL}}api/v1/customers/sign_up",
-							"host": [
-								"{{baseURL}}api"
-							],
-							"path": [
-								"v1",
-								"customers",
-								"sign_up"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Customer email and password as empty",
 					"request": {
 						"method": "POST",
@@ -823,6 +773,56 @@
 								{
 									"key": "customer[email]",
 									"value": "{{customerEmail}}",
+									"type": "text"
+								},
+								{
+									"key": "customer[password]",
+									"value": "{{customerPass}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}api/v1/customers/sign_up",
+							"host": [
+								"{{baseURL}}api"
+							],
+							"path": [
+								"v1",
+								"customers",
+								"sign_up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Customer Existing email sign up",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"verify unsuccesful sign up attempt for existing customer email\", function(){",
+									"",
+									"    pm.response.to.have.status(500);",
+									"    const res = pm.response.json();",
+									"    pm.expect(res.exception).to.contain(\"ERROR:  duplicate key value violates unique constraint \");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "customer[email]",
+									"value": "{{signedUpCustomer}}",
 									"type": "text"
 								},
 								{
