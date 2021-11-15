@@ -1,0 +1,14 @@
+{
+	"id": "f0da9257-c257-4ad6-8cee-b358f185cc85",
+	"name": "doctor_ecp_local_env",
+	"values": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:3000/",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-11-15T15:14:16.435Z",
+	"_postman_exported_using": "Postman/8.12.4"
+}
