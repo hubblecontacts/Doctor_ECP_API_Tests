@@ -9,119 +9,6 @@
 			"name": "Doctor Signup",
 			"item": [
 				{
-					"name": "Doc Successful Signup",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.environment.set(\"docEmail\", pm.variables.replaceIn(\"{{$randomEmail}}\"));"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"verify statuscode\", function(){",
-									"",
-									"  pm.response.to.have.status(200);",
-									"",
-									"});",
-									"",
-									"pm.environment.set(\"signedUpDoc\", pm.environment.get(\"docEmail\"));"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "doctor[email]",
-									"value": "{{docEmail}}",
-									"type": "text"
-								},
-								{
-									"key": "doctor[password]",
-									"value": "{{docPass}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseURL}}api/v1/doctors/sign_up",
-							"host": [
-								"{{baseURL}}api"
-							],
-							"path": [
-								"v1",
-								"doctors",
-								"sign_up"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Doc Existing email Signup",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const res = pm.response.json();",
-									"",
-									"pm.test(\"verify duplicate email error\", function(){",
-									"",
-									"  pm.response.to.have.status(500);",
-									"  console.log(res.exception);",
-									"  pm.expect(res.exception).to.contain(\"duplicate key value violates unique constraint\");",
-									"",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "doctor[email]",
-									"value": "{{signedUpDoc}}",
-									"type": "text"
-								},
-								{
-									"key": "doctor[password]",
-									"value": "{{docPass}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseURL}}api/v1/doctors/sign_up",
-							"host": [
-								"{{baseURL}}api"
-							],
-							"path": [
-								"v1",
-								"doctors",
-								"sign_up"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Doctor email and password as null",
 					"event": [
 						{
@@ -245,29 +132,30 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Doctor Signin",
-			"item": [
+				},
 				{
-					"name": "Doc Successful Signin",
+					"name": "Doc Successful Signup",
 					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"docEmail\", pm.variables.replaceIn(\"{{$randomEmail}}\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
+									"pm.test(\"verify statuscode\", function(){",
 									"",
-									"pm.test(\"verify status code to be 200\", function(){",
 									"  pm.response.to.have.status(200);",
-									"  console.log(pm.response.headers.get(\"Authorization\"));",
+									"",
 									"});",
 									"",
-									"let token = pm.response.headers.get(\"Authorization\");",
-									"token = token.replace(\"Bearer \", \"\");",
-									"console.log(token);",
-									"pm.environment.set(\"Authorization_bearer_token\", token);"
+									"pm.environment.set(\"signedUpDoc\", pm.environment.get(\"docEmail\"));"
 								],
 								"type": "text/javascript"
 							}
@@ -292,19 +180,77 @@
 							]
 						},
 						"url": {
-							"raw": "{{baseURL}}api/v1/doctors/sign_in",
+							"raw": "{{baseURL}}api/v1/doctors/sign_up",
 							"host": [
 								"{{baseURL}}api"
 							],
 							"path": [
 								"v1",
 								"doctors",
-								"sign_in"
+								"sign_up"
 							]
 						}
 					},
 					"response": []
 				},
+				{
+					"name": "Doc Existing email Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"",
+									"pm.test(\"verify duplicate email error\", function(){",
+									"",
+									"  pm.response.to.have.status(500);",
+									"  console.log(res.exception);",
+									"  pm.expect(res.exception).to.contain(\"duplicate key value violates unique constraint\");",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "doctor[email]",
+									"value": "{{signedUpDoc}}",
+									"type": "text"
+								},
+								{
+									"key": "doctor[password]",
+									"value": "{{docPass}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}api/v1/doctors/sign_up",
+							"host": [
+								"{{baseURL}}api"
+							],
+							"path": [
+								"v1",
+								"doctors",
+								"sign_up"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Doctor Signin",
+			"item": [
 				{
 					"name": "Doctor sign in with wrong credentials (pass)",
 					"event": [
@@ -505,6 +451,60 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Doc Successful Signin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"verify status code to be 200\", function(){",
+									"  pm.response.to.have.status(200);",
+									"  console.log(pm.response.headers.get(\"Authorization\"));",
+									"});",
+									"",
+									"let token = pm.response.headers.get(\"Authorization\");",
+									"token = token.replace(\"Bearer \", \"\");",
+									"console.log(token);",
+									"pm.environment.set(\"Authorization_bearer_token\", token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "doctor[email]",
+									"value": "{{docEmail}}",
+									"type": "text"
+								},
+								{
+									"key": "doctor[password]",
+									"value": "{{docPass}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}api/v1/doctors/sign_in",
+							"host": [
+								"{{baseURL}}api"
+							],
+							"path": [
+								"v1",
+								"doctors",
+								"sign_in"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -603,66 +603,6 @@
 		{
 			"name": "Customer Signup",
 			"item": [
-				{
-					"name": "Customer Successful Signup",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.environment.set(\"customerEmail\", pm.variables.replaceIn(\"{{$randomEmail}}\"));"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"verify successful customer sign up test\", function(){",
-									"",
-									"pm.response.to.have.status(200);",
-									"",
-									"});",
-									"",
-									"pm.environment.set(\"signedUpCustomer\", pm.environment.get(\"customerEmail\"));"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "customer[email]",
-									"value": "{{customerEmail}}",
-									"type": "text"
-								},
-								{
-									"key": "customer[password]",
-									"value": "{{customerPass}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseURL}}api/v1/customers/sign_up",
-							"host": [
-								"{{baseURL}}api"
-							],
-							"path": [
-								"v1",
-								"customers",
-								"sign_up"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Customer email and password as null",
 					"event": [
@@ -845,33 +785,30 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Customer Signin",
-			"item": [
+				},
 				{
-					"name": "Successful Customer Sign in",
+					"name": "Customer Successful Signup",
 					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"customerEmail\", pm.variables.replaceIn(\"{{$randomEmail}}\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"verify successful sign in status code\", function(){",
+									"pm.test(\"verify successful customer sign up test\", function(){",
 									"",
-									"  pm.response.to.have.status(200);",
-									"  ",
-									"  let token = pm.response.headers.get(\"Authorization\");",
-									"  token = token.replace(\"Bearer \", \"\");",
-									"",
-									"  console.log(token);",
-									"",
-									"  pm.environment.set(\"Auth_token_customer\", token);",
+									"pm.response.to.have.status(200);",
 									"",
 									"});",
 									"",
-									""
+									"pm.environment.set(\"signedUpCustomer\", pm.environment.get(\"customerEmail\"));"
 								],
 								"type": "text/javascript"
 							}
@@ -879,26 +816,13 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							},
-							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
 								{
 									"key": "customer[email]",
-									"value": "{{signedUpCustomer}}",
+									"value": "{{customerEmail}}",
 									"type": "text"
 								},
 								{
@@ -909,26 +833,24 @@
 							]
 						},
 						"url": {
-							"raw": "{{baseURL}}api/v1/customers/sign_in",
+							"raw": "{{baseURL}}api/v1/customers/sign_up",
 							"host": [
 								"{{baseURL}}api"
 							],
 							"path": [
 								"v1",
 								"customers",
-								"sign_in"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": null,
-									"disabled": true
-								}
+								"sign_up"
 							]
 						}
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "Customer Signin",
+			"item": [
 				{
 					"name": "Customer Sign in with wrong credential (email)",
 					"event": [
@@ -1107,6 +1029,84 @@
 								"v1",
 								"customers",
 								"sign_in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Successful Customer Sign in",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"verify successful sign in status code\", function(){",
+									"",
+									"  pm.response.to.have.status(200);",
+									"  ",
+									"  let token = pm.response.headers.get(\"Authorization\");",
+									"  token = token.replace(\"Bearer \", \"\");",
+									"",
+									"  console.log(token);",
+									"",
+									"  pm.environment.set(\"Auth_token_customer\", token);",
+									"",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "customer[email]",
+									"value": "{{signedUpCustomer}}",
+									"type": "text"
+								},
+								{
+									"key": "customer[password]",
+									"value": "{{customerPass}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}api/v1/customers/sign_in",
+							"host": [
+								"{{baseURL}}api"
+							],
+							"path": [
+								"v1",
+								"customers",
+								"sign_in"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -1343,83 +1343,6 @@
 					"response": []
 				},
 				{
-					"name": "Make an order successfully with valid shipping id and product id, var id",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"order successful creation verification\", function(){",
-									"",
-									"  pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"customer email verification for order\", function(){",
-									"  ",
-									"    const res = pm.response.json();",
-									"    console.log(res.data.createOrder.customer.email);",
-									"    pm.expect(res.data.createOrder.customer.email).to.be.eql(pm.environment.get(\"signedUpCustomer\").toLowerCase());",
-									"  ",
-									"});",
-									"",
-									"pm.test(\"doctor email verification for order\", function(){",
-									"  ",
-									"    const res = pm.response.json();",
-									"    console.log(res.data.createOrder.customer.email);",
-									"    pm.expect(res.data.createOrder.doctor.email).to.be.eql(pm.environment.get(\"signedUpDoc\").toLowerCase());",
-									"  ",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.environment.set(\"pro_quantity\", _.random(1, 10));",
-									"console.log(pm.environment.get(\"pro_quantity\"));"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{Auth_token_customer}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "graphql",
-							"graphql": {
-								"query": "mutation Checkout {\n  createOrder(\n    input: {attributes: {shippingAddressId: \"{{shippingId}}\", orderType: \"SINGLE_PURCHASE\", doctorId: \"{{docId}}\", orderItems: [{productId: \"{{prod_id}}\", \n        productVariantId: \"{{var_id}}\", \n        quantity: 5\n        \n     } ]}}\n  ) {\n    id\n    customer {\n      email\n      id\n    }\n    doctor {\n      email\n      id\n    }\n    orderType\n    orderItems {\n      id\n      quantity\n    }\n  }\n}\n",
-								"variables": ""
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}graphql",
-							"host": [
-								"{{baseURL}}graphql"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Make an unsuccessful order",
 					"event": [
 						{
@@ -1487,60 +1410,6 @@
 					"response": []
 				},
 				{
-					"name": "Make an order with non existent variant id",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"non existent variant verification\", function(){",
-									"",
-									"const res = pm.response.json();",
-									"",
-									"pm.expect(res.errors[0].message).to.be.eql(\"Validation error: Variants should be exists for given product\");",
-									"",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{Auth_token_customer}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "graphql",
-							"graphql": {
-								"query": "mutation Checkout {\n  createOrder(\n    input: {attributes: {shippingAddressId: \"{{shippingId}}\", orderType: \"SINGLE_PURCHASE\", doctorId: \"{{docId}}\", orderItems: [{productId: \"{{prod_id}}\", productVariantId: 3, quantity: 10}]}}\n  ) {\n    id\n    customer {\n      email\n      id\n    }\n    doctor {\n      email\n      id\n    }\n    orderType\n    orderItems {\n      id\n      quantity\n    }\n  }\n}\n",
-								"variables": ""
-							}
-						},
-						"url": {
-							"raw": "{{baseURL}}graphql",
-							"host": [
-								"{{baseURL}}graphql"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Make an order with different product id",
 					"event": [
 						{
@@ -1582,6 +1451,60 @@
 							"mode": "graphql",
 							"graphql": {
 								"query": "mutation Checkout {\n  createOrder(\n    input: {attributes: {shippingAddressId: \"{{shippingId}}\", orderType: \"SINGLE_PURCHASE\", doctorId: \"{{docId}}\", orderItems: [{productId: 6, productVariantId: \"{{var_id}}\", quantity: 10}]}}\n  ) {\n    id\n    customer {\n      email\n      id\n    }\n    doctor {\n      email\n      id\n    }\n    orderType\n    orderItems {\n      id\n      quantity\n    }\n  }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}graphql",
+							"host": [
+								"{{baseURL}}graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Make an order with non existent variant id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"non existent variant verification\", function(){",
+									"",
+									"const res = pm.response.json();",
+									"",
+									"pm.expect(res.errors[0].message).to.be.eql(\"Validation error: Variants should be exists for given product\");",
+									"",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth_token_customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Checkout {\n  createOrder(\n    input: {attributes: {shippingAddressId: \"{{shippingId}}\", orderType: \"SINGLE_PURCHASE\", doctorId: \"{{docId}}\", orderItems: [{productId: \"{{prod_id}}\", productVariantId: 3, quantity: 10}]}}\n  ) {\n    id\n    customer {\n      email\n      id\n    }\n    doctor {\n      email\n      id\n    }\n    orderType\n    orderItems {\n      id\n      quantity\n    }\n  }\n}\n",
 								"variables": ""
 							}
 						},
@@ -1700,6 +1623,83 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Make an order successfully with valid shipping id and product id, var id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"order successful creation verification\", function(){",
+									"",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"customer email verification for order\", function(){",
+									"  ",
+									"    const res = pm.response.json();",
+									"    console.log(res.data.createOrder.customer.email);",
+									"    pm.expect(res.data.createOrder.customer.email).to.be.eql(pm.environment.get(\"signedUpCustomer\").toLowerCase());",
+									"  ",
+									"});",
+									"",
+									"pm.test(\"doctor email verification for order\", function(){",
+									"  ",
+									"    const res = pm.response.json();",
+									"    console.log(res.data.createOrder.customer.email);",
+									"    pm.expect(res.data.createOrder.doctor.email).to.be.eql(pm.environment.get(\"signedUpDoc\").toLowerCase());",
+									"  ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"pro_quantity\", _.random(1, 10));",
+									"console.log(pm.environment.get(\"pro_quantity\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Auth_token_customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Checkout {\n  createOrder(\n    input: {attributes: {shippingAddressId: \"{{shippingId}}\", orderType: \"SINGLE_PURCHASE\", doctorId: \"{{docId}}\", orderItems: [{productId: \"{{prod_id}}\", \n        productVariantId: \"{{var_id}}\", \n        quantity: {{pro_quantity}}\n        \n     } ]}}\n  ) {\n    id\n    customer {\n      email\n      id\n    }\n    doctor {\n      email\n      id\n    }\n    orderType\n    orderItems {\n      id\n      quantity\n    }\n  }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}graphql",
+							"host": [
+								"{{baseURL}}graphql"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1722,8 +1722,7 @@
 									"  pm.expect(pm.environment.get(\"docId\")).to.be.eql(res.doctor.id);",
 									"  pm.expect(pm.environment.get(\"custId\")).to.be.eql(res.customer.id);",
 									"  pm.expect(pm.environment.get(\"prod_id\")).to.be.eql(res.orderItems[0].product.id);",
-									"  //pm.expect(pm.environment.get(\"pro_quantity\")).to.be.eql(res.orderItems[0].quantity);",
-									"  console.log( res.orderItems[0].quantity);",
+									"  pm.expect(pm.environment.get(\"pro_quantity\")).to.be.eql(res.orderItems[0].quantity);",
 									"});",
 									"",
 									"pm.test(\"verify shipping address is correct\", function(){",
@@ -1796,7 +1795,7 @@
 									"  pm.expect(pm.environment.get(\"custId\")).to.be.eql(res.customer.id);",
 									"  pm.expect(pm.environment.get(\"docId\")).to.be.eql(res.doctor.id);",
 									"  pm.expect(pm.environment.get(\"prod_id\")).to.be.eql(res.orderItems[0].product.id);",
-									"  //pm.expect(pm.environment.get(\"pro_quantity\")).to.be.eql(res.orderItems[0].quantity);",
+									"  pm.expect(pm.environment.get(\"pro_quantity\")).to.be.eql(res.orderItems[0].quantity);",
 									"   console.log(res.orderItems[0].quantity);",
 									"});",
 									"",
